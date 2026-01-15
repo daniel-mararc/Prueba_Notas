@@ -4,7 +4,8 @@
 }
 
 body {
-  background-color: blanchedalmond;
+  background-color: beige;
+  max-width: 100%;
 }
 
 .boton {
@@ -13,6 +14,20 @@ body {
   margin: 10px;
   bottom: 0;
   right: 0;
+  border: 3px black solid;
   background-color: whitesmoke;
-  border-radius: 50% 50%;
+  border-radius: 100%;
+}
+
+.notas {
+  display: grid;
+  gap: 10px;
+  margin: 10px;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+}
+
+.nota {
+  border: 5px wheat solid;
+  background-color: whitesmoke;
 }
