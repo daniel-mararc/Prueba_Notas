@@ -7,11 +7,18 @@ $titulo = $datos['titulo'];
 $desc = $datos['desc'];
 
 
+
 if ($mysqli->connect_errno) {
     echo "Fallo al conectar a MySQL";
 } else {
-    $commit = `insert into notas (titulo,desc) values ($titulo, $desc);`
-    
+    $commit = "insert into nota (titulo,descripcion) values ('$titulo', '$desc');";
+    $mysqli->query($commit);
 }
 
+
+
 ?>
+
+<script>
+  const prueba = <?= json_encode($datos)?>;
+</script>

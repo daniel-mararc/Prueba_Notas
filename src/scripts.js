@@ -11,6 +11,8 @@ botonAñadir.addEventListener("click", () => {
   let desc = document.createElement("p");
   desc.textContent = "Descripcion de prueba ";
 
+  console.log(titulo);
+
   div.append(titulo);
   div.append(desc);
 
@@ -19,6 +21,11 @@ botonAñadir.addEventListener("click", () => {
   fetch("guardarNotas.php", {
     method: "POST",
     headers: { "Content-Type": "aplication/json" },
-    body: JSON.stringify({ titulo: titulo, desc: desc }),
+    body: JSON.stringify({
+      titulo: titulo.textContent,
+      desc: desc.textContent,
+    }),
   });
 });
+
+console.log(prueba);

@@ -2,6 +2,8 @@
 
 $mysqli = new mysqli("localhost", "root", "root", "notas");
 
+$mysqli->autocommit(false);
+
 if ($mysqli->connect_errno) {
     echo "Fallo al conectar a MySQL";
 } else {
@@ -11,14 +13,6 @@ if ($mysqli->connect_errno) {
     $fila = $resultado -> fetch_array();
     }
 }
-
-$raw = file_get_contents("php://input");
-$datos = json_decode($raw);
-
-var_dump($datos);
-
-
-
 ?>
 
 <script>
