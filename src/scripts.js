@@ -1,9 +1,16 @@
 let divContenedorNotas = document.getElementsByClassName("contenedorNotas")[0];
 let divCrearNota = document.createElement("div");
+let divActualizarNota = document.createElement("div");
 let divNotas = document.querySelector(".nota");
+
 let botonAñadir = document.getElementsByClassName("boton")[0];
 let botonGuardar = document.createElement("button");
+let botonActualizar = document.createElement("button");
 let botonSalir = document.createElement("button");
+
+botonGuardar.textContent = "Guardar";
+botonActualizar.textContent = "Actualizar";
+botonSalir.textContent = "Salir";
 
 let inputTitulo = document.createElement("input");
 inputTitulo.setAttribute("type", "text");
@@ -39,8 +46,9 @@ botonAñadir.addEventListener("click", () => {
   divCrearNota.style.display = "block";
   error.style.display = "none";
 
-  botonGuardar.textContent = "Guardar";
-  botonSalir.textContent = "Salir";
+  if ((divActualizarNota.style.display = "block")) {
+    divActualizarNota.style.display = "none";
+  }
 
   divCrearNota.append(inputTitulo);
   divCrearNota.append(inputDescripcion);
@@ -88,21 +96,57 @@ botonGuardar.addEventListener("click", () => {
   });
 });
 
-botonSalir.addEventListener("click", () => {
-  divCrearNota.style.display = "none";
-});
-
 divContenedorNotas.addEventListener("click", (e) => {
   if (e.target.tagName == "DIV") {
     let id = e.target.getAttribute("id");
-    console.log(id);
+    divActualizarNota.style.display = "block";
 
-    fetch("recolectorNotas.php", {
-      method: "POST",
-      headers: { "Content-Type": "aplication/json" },
-      body: JSON.stringify({
-        id: id,
-      }),
-    });
+    if ((divCrearNota.style.display = "block")) {
+      divCrearNota.style.display = "none";
+    }
+    if (id != null) {
+      error.style.display = "none";
+
+      divActualizarNota.append(inputTitulo);
+      divActualizarNota.append(inputDescripcion);
+      divActualizarNota.append(botonActualizar);
+      divActualizarNota.append(botonSalir);
+
+      inputTitulo.value = e.target.querySelector("h3").textContent;
+      inputDescripcion.value = e.target.querySelector("p").textContent;
+
+      document.body.append(divActualizarNota);
+    }
   }
+});
+
+botonActualizar.addEventListener("click", () => {
+  titulo.textContent = inputTitulo.value;
+  desc.textContent = inputDescripcion.value;
+
+  if (titulo.textContent != "" || desc.textContent != "") {
+    div.append(titulo);
+    div.append(desc);
+
+    divContenedorNotas.append(div);
+
+    divActualizarNota.style.display = "none";
+  } else {
+    error.textContent = "Tienes que poner texto";
+    divActualizarNota.append(error);
+  }
+
+  fetch("actualizarNotas.php", {
+    method: "POST",
+    headers: { "Content-Type": "aplication/json" },
+    body: JSON.stringify({
+      titulo: titulo.textContent,
+      desc: desc.textContent,
+      id: php[id][0],
+    }),
+  });
+});
+
+botonSalir.addEventListener("click", () => {
+  divCrearNota.style.display = "none";
 });
