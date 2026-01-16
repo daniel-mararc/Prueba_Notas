@@ -66,3 +66,30 @@ body {
   transform: translateY(-5px);
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
 }
+
+.crearNota,
+.actualizarNota {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  width: 90%;
+  max-width: 420px;
+
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 25px;
+
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  z-index: 1000;
+
+  display: none; /* lo muestras con JS */
+}
+
+.crearNota h3,
+.actualizarNota h3 {
+  margin-bottom: 15px;
+  font-size: 22px;
+  color: #5f4b32;
+}
