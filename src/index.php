@@ -4,19 +4,23 @@ $mysqli = new mysqli("localhost", "root", "root", "notas");
 
 $mysqli->autocommit(false);
 
+$arrFila = array();
+
 if ($mysqli->connect_errno) {
     echo "Fallo al conectar a MySQL";
 } else {
   $consulta = "select * from nota";
   if ($mysqli -> query($consulta) != null) {
     $resultado = $mysqli -> query($consulta);
-    $fila = $resultado -> fetch_array();
+    while ($fila = $resultado -> fetch_array()) {
+      array_push($arrFila, [$fila['id'],$fila['titulo'],$fila['descripcion']]);
+    }
     }
 }
 ?>
 
 <script>
-  const php = <?= json_encode($fila)?>;
+  const php = <?= json_encode($arrFila)?>;
 </script>
 
 <!DOCTYPE html>

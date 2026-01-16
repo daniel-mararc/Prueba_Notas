@@ -18,7 +18,3 @@ if ($mysqli->connect_errno) {
 
 
 ?>
-
-<script>
-  const prueba = <?= json_encode($datos)?>;
-</script>
