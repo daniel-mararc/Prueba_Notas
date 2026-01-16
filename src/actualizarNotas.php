@@ -10,10 +10,7 @@ $id = $datos['id'];
 if ($mysqli->connect_errno) {
     echo "Fallo al conectar a MySQL";
 } else {
-    $commit = "update into nota (titulo,descripcion) values ('$titulo', '$desc') where id = $id;";
+    $commit = "update nota set titulo = $titulo, descripcion = $desc where id = $id;";
     $mysqli->query($commit);
 }
-
-
-
 ?>

@@ -6,8 +6,6 @@ $datos = json_decode(file_get_contents("php://input"), true);
 $titulo = $datos['titulo'];
 $desc = $datos['desc'];
 
-
-
 if ($mysqli->connect_errno) {
     echo "Fallo al conectar a MySQL";
 } else {
