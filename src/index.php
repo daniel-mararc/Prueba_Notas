@@ -32,7 +32,7 @@ if ($mysqli->connect_errno) {
     <link rel="stylesheet" href="style.css"/>
   <body>
     <span class="boton">+</span>
-    <div class="notas">
+    <div class="contenedorNotas">
     </div>
   </body>
   <script src="scripts.js"></script>

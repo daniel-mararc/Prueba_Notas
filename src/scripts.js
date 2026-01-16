@@ -1,22 +1,27 @@
-let divNotas = document.getElementsByClassName("notas")[0];
+let divContenedorNotas = document.getElementsByClassName("contenedorNotas")[0];
 let divCrearNota = document.createElement("div");
+let divNotas = document.querySelector(".nota");
 let botonAñadir = document.getElementsByClassName("boton")[0];
 let botonGuardar = document.createElement("button");
 let botonSalir = document.createElement("button");
-let inputTitulo = document.createElement("input");
-let inputDescripcion = document.createElement("input");
-let error = document.createElement("p");
 
+let inputTitulo = document.createElement("input");
 inputTitulo.setAttribute("type", "text");
 inputTitulo.setAttribute("id", "titulo");
 inputTitulo.setAttribute("placeholder", "Titulo");
 
+let inputDescripcion = document.createElement("input");
 inputDescripcion.setAttribute("type", "text");
 inputDescripcion.setAttribute("id", "descripcion");
 inputDescripcion.setAttribute("placeholder", "Descripcion");
 
+let error = document.createElement("p");
+
 for (let i = 0; i < php.length; i++) {
   let div = document.createElement("div");
+
+  div.setAttribute("id", php[i][0]);
+
   div.classList.add("nota");
   let titulo = document.createElement("h3");
   let desc = document.createElement("p");
@@ -27,7 +32,7 @@ for (let i = 0; i < php.length; i++) {
   div.append(titulo);
   div.append(desc);
 
-  divNotas.append(div);
+  divContenedorNotas.append(div);
 }
 
 botonAñadir.addEventListener("click", () => {
@@ -50,6 +55,9 @@ botonAñadir.addEventListener("click", () => {
 
 botonGuardar.addEventListener("click", () => {
   let div = document.createElement("div");
+
+  div.setAttribute("id", php.length + 1);
+
   div.classList.add("nota");
 
   let titulo = document.createElement("h3");
@@ -62,7 +70,7 @@ botonGuardar.addEventListener("click", () => {
     div.append(titulo);
     div.append(desc);
 
-    divNotas.append(div);
+    divContenedorNotas.append(div);
 
     divCrearNota.style.display = "none";
   } else {
@@ -82,4 +90,19 @@ botonGuardar.addEventListener("click", () => {
 
 botonSalir.addEventListener("click", () => {
   divCrearNota.style.display = "none";
+});
+
+divContenedorNotas.addEventListener("click", (e) => {
+  if (e.target.tagName == "DIV") {
+    let id = e.target.getAttribute("id");
+    console.log(id);
+
+    fetch("recolectorNotas.php", {
+      method: "POST",
+      headers: { "Content-Type": "aplication/json" },
+      body: JSON.stringify({
+        id: id,
+      }),
+    });
+  }
 });
