@@ -1,7 +1,9 @@
-let divNotas = document.getElementsByClassName("notas");
-let botonAñadir = document.getElementsByClassName("boton");
+let divNotas = document.getElementsByClassName("notas")[0];
+let botonAñadir = document.getElementsByClassName("boton")[0];
 
-botonAñadir[0].addEventListener("click", () => {
+console.log(php);
+
+botonAñadir.addEventListener("click", () => {
   let div = document.createElement("div");
   div.classList.add("nota");
   let titulo = document.createElement("h3");
@@ -12,5 +14,11 @@ botonAñadir[0].addEventListener("click", () => {
   div.append(titulo);
   div.append(desc);
 
-  divNotas[0].append(div);
+  divNotas.append(div);
+
+  fetch("guardarNotas.php", {
+    method: "POST",
+    headers: { "Content-Type": "aplication/json" },
+    body: JSON.stringify({ titulo: titulo, desc: desc }),
+  });
 });
