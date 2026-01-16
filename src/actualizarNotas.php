@@ -1,7 +1,4 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 $mysqli = new mysqli("localhost", "root", "root", "notas");
 
@@ -13,7 +10,7 @@ $id = $datos['id'];
 if ($mysqli->connect_errno) {
     echo "Fallo al conectar a MySQL";
 } else {
-    $commit = "update nota set titulo = '$titulo', descripcion = '$desc' where id = $id";
+    $commit = "update nota set titulo = '$titulo', descripcion = '$desc' where id = $id;";
     $mysqli->query($commit);
 }
 ?>

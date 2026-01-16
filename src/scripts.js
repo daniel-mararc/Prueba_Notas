@@ -12,6 +12,7 @@ let botonBorrar = document.createElement("button");
 
 botonGuardar.textContent = "Guardar";
 botonActualizar.textContent = "Actualizar";
+botonBorrar.textContent = "Borrar";
 botonSalir.textContent = "Salir";
 
 let inputTitulo = document.createElement("input");
@@ -159,8 +160,10 @@ divContenedorNotas.addEventListener("click", (e) => {
       fetch("borrarNotas.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        id: notaDiv.id,
+        body: JSON.stringify({ id: notaDiv.id }),
       });
+      notaDiv.remove();
+      divActualizarNota.style.display = "none";
     });
   }
 });
