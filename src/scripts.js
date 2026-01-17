@@ -3,6 +3,10 @@ let divCrearNota = document.createElement("div");
 divCrearNota.classList.add("crearNota");
 let divActualizarNota = document.createElement("div");
 divActualizarNota.classList.add("actualizarNota");
+let divBotonesCrear = document.createElement("div");
+let divBotonesActualizar = document.createElement("div");
+divBotonesCrear.classList.add("botones");
+divBotonesActualizar.classList.add("botones");
 
 let botonAñadir = document.getElementsByClassName("boton")[0];
 let botonGuardar = document.createElement("button");
@@ -46,17 +50,19 @@ for (let i = 0; i < php.length; i++) {
 }
 
 botonAñadir.addEventListener("click", () => {
-  divCrearNota.style.display = "block";
+  divCrearNota.style.display = "flex";
   error.style.display = "none";
 
   if ((divActualizarNota.style.display = "block")) {
     divActualizarNota.style.display = "none";
   }
 
+  divBotonesCrear.append(botonGuardar);
+  divBotonesCrear.append(botonSalir);
+
   divCrearNota.append(inputTitulo);
   divCrearNota.append(textAreaDescripcion);
-  divCrearNota.append(botonGuardar);
-  divCrearNota.append(botonSalir);
+  divCrearNota.append(divBotonesCrear);
 
   inputTitulo.value = "";
   textAreaDescripcion.value = "";
@@ -112,15 +118,17 @@ divContenedorNotas.addEventListener("click", (e) => {
   if (e.target.closest(".nota")) {
     let notaDiv = e.target.closest(".nota");
 
-    divActualizarNota.style.display = "block";
+    divActualizarNota.style.display = "flex";
     divCrearNota.style.display = "none";
     error.style.display = "none";
 
+    divBotonesActualizar.append(botonActualizar);
+    divBotonesActualizar.append(botonBorrar);
+    divBotonesActualizar.append(botonSalir);
+
     divActualizarNota.append(inputTitulo);
     divActualizarNota.append(textAreaDescripcion);
-    divActualizarNota.append(botonActualizar);
-    divActualizarNota.append(botonSalir);
-    divActualizarNota.append(botonBorrar);
+    divActualizarNota.append(divBotonesActualizar);
 
     let h3 = notaDiv.querySelector("h3");
     let p = notaDiv.querySelector("p");
