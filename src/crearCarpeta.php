@@ -7,14 +7,13 @@ $mysqli = new mysqli("localhost", "root", "root", "notas");
 
 $datos = json_decode(file_get_contents("php://input"), true);
 $id = $datos['id'];
-$titulo = $datos['titulo'];
-$desc = $datos['desc'];
-$fav = $datos['fav'] ? 1 : 0;
+$nombre = $datos['nombre'];
 
 if ($mysqli->connect_errno) {
     echo json_encode("Fallo al conectar a MySQL");
 } else {
-    $commit = "insert into notas (id, id_usu, titulo, descripcion, favorita) values ('$id', $id_usu, '$titulo', '$desc', $fav);";
+    $commit = "insert into carpetas (id ,id_usu, nombre) values ('$id', $id_usu, '$nombre');";
     $mysqli->query($commit);
+    echo json_encode($mysqli->error);
 }
 ?>

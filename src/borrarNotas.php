@@ -1,4 +1,7 @@
 <?php
+session_start();
+
+$id_usu = $_SESSION['id_usu'];
 
 $mysqli = new mysqli("localhost", "root", "root", "notas");
 
@@ -8,8 +11,7 @@ $id = $datos['id'];
 if ($mysqli->connect_errno) {
     echo "Fallo al conectar a MySQL";
 } else {
-    $commit = "delete from nota where id = $id;";
+    $commit = "delete from notas where id = '$id' and id_usu = $id_usu;";
     $mysqli->query($commit);
-
 }
 ?>
