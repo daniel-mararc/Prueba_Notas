@@ -162,6 +162,25 @@ body {
   color: gold;
 }
 
+.compartir {
+  position: absolute;
+
+  top: 12px;
+  right: 40px;
+
+  font-size: 24px;
+
+  cursor: pointer;
+
+  user-select: none;
+
+  transition: 0.2s ease;
+}
+
+.compartir:hover {
+  transform: scale(1.2);
+}
+
 .crearNota,
 .actualizarNota,
 .configVent {
@@ -417,4 +436,119 @@ button:hover {
 
 .carpeta .button:active {
   transform: scale(0.95);
+}
+
+.popupCarpetas {
+  position: absolute;
+
+  bottom: 90px;
+  left: 25px;
+
+  width: 250px;
+  max-height: 300px;
+  overflow-y: auto;
+
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+
+  padding: 15px;
+
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+
+  box-shadow: var(--shadow-medium);
+
+  z-index: 2000;
+}
+
+.popupCarpetas.activo {
+  display: flex;
+}
+
+.carpetaPopup {
+  padding: 10px;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.carpetaPopup:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.carpetaPopup.seleccionada {
+  background: #6c63ff;
+  color: white;
+}
+
+.nuevaCarpetaPopup {
+  margin-top: 10px;
+}
+
+.botonesPopup {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.carpetaPopup {
+  background: var(--color-surface-alt);
+
+  padding: 10px;
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.carpetaPopup:hover {
+  background: var(--color-accent);
+  color: white;
+}
+
+.carpetaPopup.seleccionada {
+  background: var(--color-primary);
+  color: white;
+}
+
+.popupUsuarios {
+  position: absolute;
+
+  top: 70px;
+  right: 25px;
+
+  width: 250px;
+  max-height: 300px;
+  overflow-y: auto;
+
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+
+  padding: 15px;
+
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+
+  box-shadow: var(--shadow-medium);
+
+  z-index: 2000;
+}
+
+.usuarioPopup {
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.usuarioPopup.seleccionado {
+  background: var(--color-primary);
+  color: white;
 }

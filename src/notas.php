@@ -58,6 +58,7 @@ if ($mysqli->connect_errno) {
       <a href="#" id="inicio">🏠 Inicio</a>
       <a href="#" id="favoritas">✨ Favoritas</a>
       <a href="#" id="configuracion">⚙️ Configuracion</a>
+      <a href="#" id="compartidos">👤 Compartidas</a>
       <a href="./index.html">🚪 Cerrar Sesion</a>
 
       <div class="contenedorCarpetas"></div>

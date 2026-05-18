@@ -3,7 +3,7 @@ $mysqli = new mysqli("localhost", "root", "root", "notas");
 
 $datos = json_decode(file_get_contents("php://input"), true);
 $email = $datos['email'];
-$password = $datos['password'];
+$password = password_hash($datos["password"], PASSWORD_DEFAULT);
 
 if ($mysqli->connect_errno) {
     echo json_encode(["ok" => false]);

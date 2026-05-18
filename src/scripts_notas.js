@@ -5,26 +5,33 @@ let divCrearNota = document.createElement("div");
 let divActualizarNota = document.createElement("div");
 let divConfigVent = document.createElement("div");
 let divCrearCarpeta = document.createElement("div");
+let divCarpetasPopup = document.createElement("div");
+let divUsuariosPopup = document.createElement("div");
 
 divCrearNota.classList.add("crearNota");
 divActualizarNota.classList.add("actualizarNota");
 divConfigVent.classList.add("configVent");
 divCrearCarpeta.classList.add("crearCarpeta");
+divCarpetasPopup.classList.add("popupCarpetas");
+divUsuariosPopup.classList.add("popupUsuarios");
 
 let divBotonesCrear = document.createElement("div");
 let divBotonesActualizar = document.createElement("div");
 let divBotonesConfig = document.createElement("div");
 let divBotonesCrearCarpeta = document.createElement("div");
+let divBotonesPopup = document.createElement("div");
 
 divBotonesCrear.classList.add("botones");
 divBotonesActualizar.classList.add("botones");
 divBotonesConfig.classList.add("botones");
 divBotonesCrearCarpeta.classList.add("botones");
+divBotonesPopup.classList.add("botonesPopup");
 
 let botonAñadir = document.getElementsByClassName("boton")[0];
 let botonInicio = document.getElementById("inicio");
 let botonFavoritas = document.getElementById("favoritas");
 let botonConfig = document.getElementById("configuracion");
+let botonCompartir = document.getElementById("compartidos");
 let botonCrearCarpeta = document.getElementById("crearCarpeta");
 
 let botonGuardar = document.createElement("button");
@@ -43,10 +50,13 @@ botonCarpetas.textContent = "Añadir Carpeta";
 botonCrear.textContent = "Crear";
 
 let estrella = document.createElement("span");
+let comaprtir = document.createElement("span");
 
 estrella.classList.add("estrella");
+comaprtir.classList.add("compartir");
 
 estrella.innerHTML = "☆";
+comaprtir.innerHTML = "👤";
 
 let tituloPagina = document.getElementsByClassName("titulo")[0];
 
@@ -127,13 +137,11 @@ botonAñadir.addEventListener("click", () => {
   divConfigVent.style.display = "none";
   divCrearCarpeta.style.display = "none";
 
-  divBotonesCrear.append(botonCarpetas);
   divBotonesCrear.append(botonGuardar);
   divBotonesCrear.append(botonSalir);
 
   estrella.classList.remove("activa");
 
-  divCrearNota.append(estrella);
   divCrearNota.append(inputTitulo);
   divCrearNota.append(textAreaDescripcion);
   divCrearNota.append(divBotonesCrear);
@@ -144,15 +152,22 @@ botonAñadir.addEventListener("click", () => {
   document.body.append(divCrearNota);
 });
 
-divCrearNota.addEventListener("click", (e) => {
+divActualizarNota.addEventListener("click", (e) => {
+  let notaId = divActualizarNota.dataset.id;
+
   if (e.target.closest(".estrella")) {
     e.target.classList.toggle("activa");
   }
-});
-
-divActualizarNota.addEventListener("click", (e) => {
-  if (e.target.closest(".estrella")) {
-    e.target.classList.toggle("activa");
+  if (e.target.closest(".compartir")) {
+    fetch("getUsuariosCompartidos.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id_nota: notaId }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        abrirPopupUsuarios(data, notaId);
+      });
   }
 });
 
@@ -179,12 +194,6 @@ botonGuardar.addEventListener("click", () => {
 
     divCrearNota.style.display = "none";
 
-    if (estrella.classList.contains("activa")) {
-      notaDiv.classList.add("favorita");
-    } else {
-      notaDiv.classList.remove("favorita");
-    }
-
     fetch("guardarNotas.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -192,7 +201,7 @@ botonGuardar.addEventListener("click", () => {
         id: div.getAttribute("id"),
         titulo: titulo.textContent,
         desc: desc.textContent,
-        fav: estrella.classList.contains("activa"),
+        fav: false,
       }),
     });
   } else {
@@ -206,6 +215,8 @@ divContenedorNotas.addEventListener("click", (e) => {
   if (e.target.closest(".nota")) {
     let notaDiv = e.target.closest(".nota");
 
+    divActualizarNota.dataset.id = notaDiv.id;
+
     divActualizarNota.style.display = "flex";
     error.style.display = "none";
 
@@ -218,6 +229,7 @@ divContenedorNotas.addEventListener("click", (e) => {
     divBotonesActualizar.append(botonBorrar);
     divBotonesActualizar.append(botonSalir);
 
+    divActualizarNota.append(comaprtir);
     divActualizarNota.append(estrella);
     divActualizarNota.append(inputTitulo);
     divActualizarNota.append(textAreaDescripcion);
@@ -236,6 +248,18 @@ divContenedorNotas.addEventListener("click", (e) => {
     textAreaDescripcion.value = notaDiv.querySelector("p").textContent;
 
     document.body.append(divActualizarNota);
+
+    botonCarpetas.onclick = () => {
+      fetch("getCarpetasAsigNotas.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id_nota: notaDiv.id }),
+      })
+        .then((res) => res.json())
+        .then((carpetasAsignadas) => {
+          abrirPopupCarpetas(carpetasAsignadas, notaDiv.id);
+        });
+    };
 
     botonActualizar.onclick = () => {
       let titulo = inputTitulo.value;
@@ -338,7 +362,7 @@ botonFavoritas.addEventListener("click", (e) => {
 
   tituloPagina.textContent = "✨ Favoritas";
 
-  fetch("notasFavoritas.php", {
+  fetch("favoritoNotas.php", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
   })
@@ -419,6 +443,46 @@ botonConfig.addEventListener("click", (e) => {
   document.body.append(divConfigVent);
 });
 
+botonCompartir.addEventListener("click", (e) => {
+  e.preventDefault();
+
+  console.log("Compartidas");
+
+  tituloPagina.textContent = "👤 Compartidas";
+
+  fetch("getNotasCompartidas.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      divContenedorNotas.innerHTML = "";
+
+      for (let i = 0; i < data.length; i++) {
+        let div = document.createElement("div");
+
+        div.setAttribute("id", data[i][0]);
+
+        div.classList.add("nota");
+        let titulo = document.createElement("h3");
+        let desc = document.createElement("p");
+        let compartido = document.createElement("small");
+
+        titulo.textContent = data[i][1];
+        desc.textContent = data[i][2];
+        compartido.textContent = "Nota de " + data[i][4];
+
+        div.classList.add("favorita");
+
+        div.append(titulo);
+        div.append(compartido);
+        div.append(desc);
+
+        divContenedorNotas.append(div);
+      }
+    });
+});
+
 botonCrearCarpeta.addEventListener("click", () => {
   divCrearCarpeta.style.display = "flex";
 
@@ -448,7 +512,7 @@ botonCrearCarpeta.addEventListener("click", () => {
     btnBorrar.classList.add("button");
     btnBorrar.textContent = "🗑️";
 
-    carpeta.appendChild(btnBorrar);
+    carpeta.append(btnBorrar);
 
     divContenedorCarpetas.append(carpeta);
 
@@ -465,15 +529,10 @@ botonCrearCarpeta.addEventListener("click", () => {
   };
 });
 
-botonCarpetas.addEventListener("click", () => {
-  console.log("boton");
-});
-
 divContenedorCarpetas.addEventListener("click", (e) => {
   if (e.target.closest(".button")) {
     let carpeta = e.target.closest(".carpeta");
     carpeta.remove();
-    console.log("borrar");
     fetch("borrarCarpeta.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -482,6 +541,176 @@ divContenedorCarpetas.addEventListener("click", (e) => {
       }),
     });
   } else if (e.target.closest(".carpeta")) {
-    console.log(e.target.id);
+    let nombre = e.target.closest(".carpeta").childNodes[0].textContent;
+
+    tituloPagina.textContent = "📂 " + nombre;
+
+    fetch("getCarpetaNotas.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: e.target.id,
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        divContenedorNotas.innerHTML = "";
+
+        for (let i = 0; i < data.length; i++) {
+          let div = document.createElement("div");
+
+          div.setAttribute("id", data[i][0]);
+
+          div.classList.add("nota");
+          let titulo = document.createElement("h3");
+          let desc = document.createElement("p");
+
+          titulo.textContent = data[i][1];
+          desc.textContent = data[i][2];
+
+          div.classList.add("favorita");
+
+          div.append(titulo);
+          div.append(desc);
+
+          divContenedorNotas.append(div);
+        }
+      });
   }
 });
+
+function abrirPopupCarpetas(carpetasAsignadas, notaId) {
+  divCarpetasPopup.innerHTML = "";
+  divCarpetasPopup.style.display = "flex";
+
+  let titulo = document.createElement("h3");
+  titulo.textContent = "Carpetas";
+  divCarpetasPopup.append(titulo);
+
+  let carpetas = document.getElementsByClassName("carpeta");
+
+  for (let i = 0; i < carpetas.length; i++) {
+    let carpeta = document.createElement("div");
+
+    carpeta.classList.add("carpetaPopup");
+    carpeta.dataset.id = carpetas[i].id;
+    carpeta.textContent = "📁 " + carpetas[i].childNodes[0].textContent;
+
+    let yaAsignada = carpetasAsignadas.includes(carpetas[i].id);
+
+    if (yaAsignada) {
+      carpeta.classList.add("seleccionada");
+    }
+
+    carpeta.onclick = () => {
+      carpeta.classList.toggle("seleccionada");
+    };
+
+    divCarpetasPopup.append(carpeta);
+  }
+
+  let divBotonesPopup = document.createElement("div");
+  divBotonesPopup.classList.add("botonesPopup");
+
+  let btnGuardar = document.createElement("button");
+  let btnCerrar = document.createElement("button");
+
+  btnGuardar.textContent = "Guardar";
+  btnCerrar.textContent = "Cerrar";
+
+  btnGuardar.onclick = () => {
+    let seleccionadas = document.querySelectorAll(".carpetaPopup.seleccionada");
+
+    let idsSeleccionados = Array.from(seleccionadas).map((c) => c.dataset.id);
+
+    fetch("guardarNotasCarpeta.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id_nota: notaId,
+        carpetas: idsSeleccionados,
+      }),
+    });
+
+    divCarpetasPopup.style.display = "none";
+  };
+
+  btnCerrar.onclick = () => {
+    divCarpetasPopup.style.display = "none";
+  };
+
+  divBotonesPopup.append(btnGuardar, btnCerrar);
+  divCarpetasPopup.append(divBotonesPopup);
+
+  divActualizarNota.append(divCarpetasPopup);
+}
+
+function abrirPopupUsuarios(usuariosCompartidos, notaId) {
+  divUsuariosPopup.innerHTML = "";
+  divUsuariosPopup.style.display = "flex";
+
+  let titulo = document.createElement("h3");
+  titulo.textContent = "Usuarios";
+  divUsuariosPopup.append(titulo);
+
+  fetch("getUsuariosCompartir.php")
+    .then((res) => res.json())
+    .then((usuarios) => {
+      for (let i = 0; i < usuarios.length; i++) {
+        let usuario = document.createElement("div");
+
+        usuario.classList.add("usuarioPopup");
+        usuario.dataset.id = usuarios[i][0];
+        usuario.textContent = "👤 " + usuarios[i][1];
+
+        let yaCompartido = usuariosCompartidos.includes(usuarios[i][0]);
+
+        if (yaCompartido) {
+          usuario.classList.add("seleccionado");
+        }
+
+        usuario.onclick = () => {
+          usuario.classList.toggle("seleccionado");
+        };
+
+        divUsuariosPopup.append(usuario);
+      }
+
+      let divBotones = document.createElement("div");
+      divBotones.classList.add("botonesPopup");
+
+      let btnGuardar = document.createElement("button");
+      let btnCerrar = document.createElement("button");
+
+      btnGuardar.textContent = "Guardar";
+      btnCerrar.textContent = "Cerrar";
+
+      btnGuardar.onclick = () => {
+        let seleccionados = document.querySelectorAll(
+          ".usuarioPopup.seleccionado",
+        );
+
+        let ids = Array.from(seleccionados).map((u) => u.dataset.id);
+
+        fetch("guardarNotasCompartidas.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id_nota: notaId,
+            usuarios: ids,
+          }),
+        });
+
+        divUsuariosPopup.style.display = "none";
+      };
+
+      btnCerrar.onclick = () => {
+        divUsuariosPopup.style.display = "none";
+      };
+
+      divBotones.append(btnGuardar, btnCerrar);
+      divUsuariosPopup.append(divBotones);
+
+      divActualizarNota.append(divUsuariosPopup);
+    });
+}
