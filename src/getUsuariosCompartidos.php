@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-$mysqli = new mysqli("localhost", "root", "root", "notas");
+require_once 'db_config.php';
 
 $datos = json_decode(file_get_contents("php://input"), true);
 
@@ -9,11 +9,6 @@ $id_nota = $datos["id_nota"];
 $id_usu = $_SESSION["id_usu"];
 
 $usuariosCompartidos = array();
-
-if ($mysqli->connect_errno) {
-    echo json_encode($usuariosCompartidos);
-    exit();
-}
 
 $consulta = "
 SELECT u.id, u.email

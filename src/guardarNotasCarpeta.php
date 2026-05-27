@@ -1,14 +1,10 @@
 <?php
-$mysqli = new mysqli("localhost", "root", "root", "notas");
+require_once 'db_config.php';
 
 $datos = json_decode(file_get_contents("php://input"), true);
 
 $id_nota = $datos["id_nota"];
 $carpetas = $datos["carpetas"];
-
-if ($mysqli->connect_errno) {
-    exit;
-}
 
 // Obtengo las carpetas actuales en BD
 $actuales = [];

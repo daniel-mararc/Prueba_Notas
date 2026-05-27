@@ -1,18 +1,13 @@
 <?php
 session_start();
 
-$mysqli = new mysqli("localhost", "root", "root", "notas");
+require_once 'db_config.php';
 
 $datos = json_decode(file_get_contents("php://input"), true);
 
 $id_nota = $datos["id_nota"];
 $usuarios = $datos["usuarios"];
 $id_usu = $_SESSION["id_usu"];
-
-if ($mysqli->connect_errno) {
-    echo "Error de conexión";
-    exit();
-}
 
 // Borrar las notas compartidas desmarcadas
 $delete = "

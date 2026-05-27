@@ -3,14 +3,9 @@ session_start();
 
 $id_usu = $_SESSION['id_usu'];
 
-$mysqli = new mysqli("localhost", "root", "root", "notas");
+require_once 'db_config.php';
 
 $usuarios = [];
-
-if ($mysqli->connect_errno) {
-    echo json_encode([]);
-    exit;
-}
 
 $consulta = "
 SELECT id, email

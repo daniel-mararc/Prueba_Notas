@@ -1,20 +1,14 @@
 <?php
 session_start();
 
-$mysqli = new mysqli("localhost", "root", "root", "notas");
+require_once 'db_config.php';
 
 $datos = json_decode(file_get_contents("php://input"), true);
 
 $email = $datos['email'];
 $password = $datos['password'];
 
-if ($mysqli->connect_errno) {
-
-    echo json_encode([
-        "ok" => false
-    ]);
-
-} else {
+{
 
     $consulta = "select * from usuarios where email = '$email'
     ";
