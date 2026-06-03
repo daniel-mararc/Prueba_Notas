@@ -4,8 +4,8 @@ use notas;
 
 create table usuarios (
     id int AUTO_INCREMENT,
-    email varchar(20) not null,
-    contraseña varchar(255) not null,
+    email varchar(255) not null,
+    contrasena varchar(255) not null,
     tema varchar(7) not null,
     constraint PK_Usuarios
         primary key (id)

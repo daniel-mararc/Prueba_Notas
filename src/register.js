@@ -27,7 +27,7 @@ botonRegistrar.addEventListener("click", () => {
   let password2 = inputPassword2.value;
   let valido = true;
 
-  if (!email.includes("@") || !email.includes(".")) {
+  if (!email.includes("@gmail") || !email.includes(".com")) {
     inputEmail.classList.add("err");
     errorEmail.style.display = "block";
     valido = false;

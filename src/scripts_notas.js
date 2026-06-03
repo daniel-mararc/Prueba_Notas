@@ -32,6 +32,7 @@ let botonInicio = document.getElementById("inicio");
 let botonFavoritas = document.getElementById("favoritas");
 let botonConfig = document.getElementById("configuracion");
 let botonCompartir = document.getElementById("compartidos");
+let botonCerrarSesion = document.getElementById("cerrarSesion");
 let botonCrearCarpeta = document.getElementById("crearCarpeta");
 
 let botonGuardar = document.createElement("button");
@@ -483,6 +484,15 @@ botonCompartir.addEventListener("click", (e) => {
     });
 });
 
+botonCerrarSesion.addEventListener("click", () => {
+  fetch("cerrarSesion.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+  }).then(() => {
+    window.location.href = "index.html";
+  });
+});
+
 botonCrearCarpeta.addEventListener("click", () => {
   divCrearCarpeta.style.display = "flex";
 
@@ -661,7 +671,9 @@ function abrirPopupUsuarios(usuariosCompartidos, notaId) {
 
         usuario.classList.add("usuarioPopup");
         usuario.dataset.id = usuarios[i][0];
-        usuario.textContent = "👤 " + usuarios[i][1];
+        let correoOriginal = String(usuarios[i][1]).trim();
+        let nombreCortado = correoOriginal.split("@")[0];
+        usuario.textContent = "👤 " + nombreCortado;
 
         let yaCompartido = usuariosCompartidos.includes(usuarios[i][0]);
 

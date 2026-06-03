@@ -1,43 +1,70 @@
 <?php
-$mysqli = new mysqli("localhost", "root", "root", "notas");
+// Indicamos que la respuesta siempre será un JSON limpio
+header('Content-Type: application/json');
 
-$datos = json_decode(file_get_contents("php://input"), true);
+session_start();
 
-$id_nota = $datos["id_nota"];
-$carpetas = $datos["carpetas"];
-
-if ($mysqli->connect_errno) {
+// Control de sesión por seguridad (opcional pero muy recomendado en producción)
+if (!isset($_SESSION['id_usu'])) {
+    http_response_code(401);
+    echo json_encode(["ok" => false, "msg" => "Sesión no iniciada."]);
     exit;
 }
 
-// Obtengo las carpetas actuales en BD
-$actuales = [];
+// Conexión con la base de datos
+$mysqli = new mysqli("localhost", "root", "root", "notas");
 
-$result = $mysqli->query("SELECT id_carpeta FROM notas_carpetas WHERE id_nota = '$id_nota'");
-
-while ($row = $result->fetch_assoc()) {
-    $actuales[] = $row["id_carpeta"];
+if ($mysqli->connect_errno) {
+    http_response_code(500);
+    echo json_encode(["ok" => false, "msg" => "Error de conexión a la base de datos."]);
+    exit;
 }
 
-// Inserto las notas en las carpetas nuevas
-foreach ($carpetas as $carpeta) {
-    if (!in_array($carpeta, $actuales)) {
-        $mysqli->query("
-            INSERT INTO notas_carpetas (id_nota, id_carpeta)
-            VALUES ('$id_nota', '$carpeta')
-        ");
+// Leer y validar los datos que llegan del frontend
+$datos = json_decode(file_get_contents("php://input"), true);
+$id_nota = $datos["id_nota"] ?? '';
+$carpetas = $datos["carpetas"] ?? []; // Si no se seleccionó ninguna carpeta, llega un array vacío
+
+if (empty($id_nota)) {
+    http_response_code(400);
+    echo json_encode(["ok" => false, "msg" => "ID de nota no proporcionado."]);
+    exit;
+}
+
+// Borrar TODAS las carpetas actuales de esta nota de golpe
+$stmt_delete = $mysqli->prepare("DELETE FROM notas_carpetas WHERE id_nota = ?");
+if ($stmt_delete) {
+    $stmt_delete->bind_param("s", $id_nota); 
+    $stmt_delete->execute();
+    $stmt_delete->close();
+} else {
+    http_response_code(500);
+    echo json_encode(["ok" => false, "msg" => "Error al limpiar carpetas anteriores: " . $mysqli->error]);
+    exit;
+}
+
+// Insertar las nuevas carpetas seleccionadas
+if (!empty($carpetas) && is_array($carpetas)) {
+    // Preparamos la consulta UNA SOLA VEZ fuera del foreach para optimizar rendimiento
+    $stmt_insert = $mysqli->prepare("INSERT INTO notas_carpetas (id_nota, id_carpeta) VALUES (?, ?)");
+    
+    if ($stmt_insert) {
+        foreach ($carpetas as $carpeta) {
+            if (!empty($carpeta)) {
+                $stmt_insert->bind_param("ss", $id_nota, $carpeta);
+                $stmt_insert->execute();
+            }
+        }
+        $stmt_insert->close();
+    } else {
+        http_response_code(500);
+        echo json_encode(["ok" => false, "msg" => "Error al preparar la inserción: " . $mysqli->error]);
+        exit;
     }
 }
 
-// Borrar las notas de las carpetas desmarcadas
-foreach ($actuales as $carpeta) {
-    if (!in_array($carpeta, $carpetas)) {
-        $mysqli->query("
-            DELETE FROM notas_carpetas
-            WHERE id_nota = '$id_nota' AND id_carpeta = '$carpeta'
-        ");
-    }
-}
+// Devolver si funciona la frontend
+echo json_encode(["ok" => true, "msg" => "Carpetas sincronizadas con éxito."]);
 
-echo json_encode(["ok" => true]);
+$mysqli->close();
 ?>
